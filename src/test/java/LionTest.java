@@ -8,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Mock;
 import com.example.Feline;
 import com.example.Lion;
-import org.mockito.Spy;
 
 import java.util.List;
 
@@ -21,42 +20,46 @@ public class LionTest {
     @Mock
     private static Lion lion;
 
-    public LionTest(String sexLionPassed, boolean expectedHasMane){
+    public LionTest(String sexLionPassed, boolean expectedHasMane) {
         this.expectedHasMane = expectedHasMane;
         this.sexLionPassed = sexLionPassed;
     }
+
     @Before
-    public void setUp (){
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Parameterized.Parameters
-    public static Object[][] getDataForLionTest(){
+    @Parameterized.Parameters(name = "{index}:returnHasManeToGenderLion{0}={1}")
+    public static Object[][] getDataForLionTest() {
         return new Object[][]{
-                {"Самец",true},
-                {"Самка",false},
+                {"Самец", true},
+                {"Самка", false},
         };
     }
+
     @Test
     public void doesHaveManeCheckReturnSexTest() throws Exception {
         Lion lion = new Lion(sexLionPassed, feline);
         Assert.assertEquals(expectedHasMane, lion.doesHaveMane());
     }
+
     @Test
-    public void lionConstructorThrowsExceptionWhenInitialisedWithWrongSexTest() throws Exception{
+    public void lionConstructorThrowsExceptionWhenInitialisedWithWrongSexTest() throws Exception {
         Assert.assertThrows("Используйте допустимые значения пола животного - самец или самка", Exception.class, () -> new Lion("Олень", feline));
     }
+
     @Test
-    public void getKittensCheckCallGetKittensTest() throws Exception{
+    public void getKittensCheckCallGetKittensTest() throws Exception {
         Lion lion = new Lion(sexLionPassed, feline);
         lion.getKittens();
         Mockito.verify(feline).getKittens();
     }
+
     @Test
     public void getFoodsPredatorTest() throws Exception {
         List<String> testStrings = List.of("string1", "string2", "string3");
         Mockito.doReturn(testStrings).when(feline).getFood(Mockito.anyString());
         Assert.assertEquals(testStrings, new Lion(sexLionPassed, feline).getFood());
     }
-
 }
